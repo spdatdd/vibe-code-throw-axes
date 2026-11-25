@@ -25,6 +25,7 @@ button{font:inherit;font-weight:700;background:var(--accent);color:#fff;border:0
 #pm{position:fixed;right:calc(10px + env(safe-area-inset-right,0px));top:calc(82px + env(safe-area-inset-top,0px));padding:4px 12px;font-size:14px;background:#2f5a78;box-shadow:0 3px 0 #1b384d}
 #tm{position:fixed;right:calc(10px + env(safe-area-inset-right,0px));top:calc(118px + env(safe-area-inset-top,0px));padding:4px 12px;font-size:14px;background:#4b4268;box-shadow:0 3px 0 #2b2440}
 #fc{position:fixed;right:calc(10px + env(safe-area-inset-right,0px));top:calc(154px + env(safe-area-inset-top,0px));padding:4px 12px;font-size:14px;background:#3a6b48;box-shadow:0 3px 0 #23422c}
+#rp{position:fixed;right:calc(10px + env(safe-area-inset-right,0px));top:calc(190px + env(safe-area-inset-top,0px));padding:4px 12px;font-size:14px;background:#7a4b25;box-shadow:0 3px 0 #4a2c14;display:none}
 #pmBar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));display:none;align-items:center;gap:12px;background:rgba(20,14,8,.72);padding:8px 14px;border-radius:12px;color:#fff4dc;font-size:13px;white-space:nowrap}
 #pmBar button{padding:5px 14px;font-size:14px}
 #repBar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));display:none;align-items:center;gap:8px;background:rgba(20,14,8,.78);padding:6px 12px;border-radius:12px;color:#fff4dc;font-size:13px;z-index:5}
@@ -33,7 +34,7 @@ button{font:inherit;font-weight:700;background:var(--accent);color:#fff;border:0
 .hide{display:none!important}
 </style></head><body>
 <div id="hud" class="t"></div><div id="combo" class="t"></div><div id="hint" class="t"></div>
-<div id="pow" title="Lực"><i></i></div><div id="elv" title="Độ cao"><i></i></div><button id="pb">⏸</button><button id="ab">🪓 Rìu Viking</button><button id="pm">📷 Photo</button><button id="tm">☀️ Ngày</button><button id="fc">🎥 Theo rìu: Bật</button>
+<div id="pow" title="Lực"><i></i></div><div id="elv" title="Độ cao"><i></i></div><button id="pb">⏸</button><button id="ab">🪓 Rìu Viking</button><button id="pm">📷 Photo</button><button id="tm">☀️ Ngày</button><button id="fc">🎥 Theo rìu: Bật</button><button id="rp">🔁 Xem lại</button>
 <div id="pmBar"><span>Kéo chuột: xoay · WASD / Mũi tên: di chuyển · Q/E: lên/xuống · Cuộn: zoom</span><button id="snap">📸 Chụp</button></div>
 <div id="repBar"><button id="repPlay">▶</button><button id="repSpd">1x</button><input id="repScrub" type="range" min="0" max="0" value="0"><span id="repTime">0.0s</span><button id="repSave">🎬 Lưu</button><button id="repClose">✖</button></div><div id="ov"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -262,7 +263,7 @@ tg={z:-15,rs:0,amp:0,ampX:0,t:0};
 const chipGeo=new THREE.BoxGeometry(.06,.06,.06),chipMat=M(0xc98d4b);
 function addScore(n){score+=n;lvlScore+=n;if(score>best){best=score;try{localStorage.setItem('axeBest3d',best)}catch(e){}}}
 function clearStuck(){for(const s of stuck)TR.remove(s.m);stuck=[]}
-function startLevel(n){lvl=n;lvlScore=0;axesLeft=AXES;streak=0;if(cur){scene.remove(cur.g);cur=null}clearStuck();aim=null;stopReplay();lastRec=null;$('repBar').style.display='none';
+function startLevel(n){lvl=n;lvlScore=0;axesLeft=AXES;streak=0;if(cur){scene.remove(cur.g);cur=null}clearStuck();aim=null;stopReplay();lastRec=null;$('repBar').style.display='none';$('rp').style.display='none';
 setTargetModel(n);
 goal=120+70*(n-1);tg.z=-Math.min(12+3*n,32);tg.t=0;TR.rotation.z=0;tg.rs=n<2?0:(.5+.35*(n-2))*(n%2?1:-1);
 tg.amp=n<3?0:Math.min(.4*(n-2),1.4);tg.ampX=n<4?0:Math.min(.5*(n-3),2);
@@ -287,11 +288,11 @@ function togglePhoto(){
       pmCam.pos.copy(cam.position);pmCam.pit=Math.max(-.35,Math.min(.6,eu.x));pmCam.yaw=eu.y;
     }
     ov.classList.add('hide');
-    ['hud','combo','hint','pb','ab','fc'].forEach(id=>$(id).classList.add('hide'));
+    ['hud','combo','hint','pb','ab','fc','rp'].forEach(id=>$(id).classList.add('hide'));
     $('pmBar').style.display='flex';$('pm').textContent='✖ Thoát';
     $('repBar').style.bottom='calc(74px + env(safe-area-inset-bottom,0px))';
   }else{
-    ['hud','combo','hint','pb','ab','fc'].forEach(id=>$(id).classList.remove('hide'));
+    ['hud','combo','hint','pb','ab','fc','rp'].forEach(id=>$(id).classList.remove('hide'));
     $('pmBar').style.display='none';$('pm').textContent='📷 Photo';
     $('repBar').style.bottom='calc(16px + env(safe-area-inset-bottom,0px))';
     if(state==='menu')showMenu();else if(state==='pause')show('Tạm dừng','','Tiếp tục',()=>{state='play';ov.classList.add('hide')});
@@ -315,9 +316,13 @@ function finishRec(typeKey){
   lastRec={frames:rec,typeKey};
   const sb=$('repScrub');sb.max=rec.length-1;sb.value=rec.length-1;
   $('repTime').textContent=rec[rec.length-1].t.toFixed(2)+'s';
-  $('repBar').style.display='flex';
-  autoRep=true;
+  $('rp').style.display='inline-block';
 }
+$('rp').onclick=()=>{
+  if(!lastRec||cur||thr)return;
+  if($('repBar').style.display==='flex'){stopReplay();$('repBar').style.display='none'}
+  else{$('repBar').style.display='flex';applyReplay(0);repPlay=true;$('repPlay').textContent='⏸'}
+};
 function applyReplay(idx){
   if(!lastRec||!lastRec.frames.length)return;
   repIdx=Math.max(0,Math.min(lastRec.frames.length-1,idx));
@@ -377,7 +382,7 @@ return{v:new THREE.Vector3(sp*Math.cos(pit)*Math.sin(yaw),sp*Math.sin(pit),-sp*M
 const ORIGIN=new THREE.Vector3(.12,1.86,-1.1);
 // bắt đầu chu kỳ animation ném rìu 3 giây (0–0.5s lấy đà ra sau-phải, 0.5–0.72s vung tới & thả rìu, 0.72–1.85s theo đà + camera cúi xuống, 1.85–3.0s hồi về tư thế chuẩn bị)
 function startThrow(dx,dy,hold){const a=aimVec(dx,dy,hold);thr={dx,dy,hold,t:0,dur:3.0,rel:0.72,launched:false,cp:0,cy:-a.yaw*.5,typeKey:AXE_TYPES[axeIdx].key}}
-function launch(dx,dy,hold,typeKey){stopReplay();$('repBar').style.display='none';rec=[];recT=0;lastStuck=null;lastType=typeKey;const a=aimVec(dx,dy,hold),cfg=AXE_TYPES.find(x=>x.key===typeKey)||AXE_TYPES[0],g=new THREE.Group(),inner=makeAxe(typeKey);g.add(inner);g.position.copy(ORIGIN);scene.add(g);
+function launch(dx,dy,hold,typeKey){stopReplay();$('repBar').style.display='none';$('rp').style.display='none';rec=[];recT=0;lastStuck=null;lastType=typeKey;const a=aimVec(dx,dy,hold),cfg=AXE_TYPES.find(x=>x.key===typeKey)||AXE_TYPES[0],g=new THREE.Group(),inner=makeAxe(typeKey);g.add(inner);g.position.copy(ORIGIN);scene.add(g);
 cur={g,inner,p:ORIGIN.clone(),v:a.v,th:.9,sp:-(5+a.sp*.15),mode:'fly',failed:false,life:.7,tipZ:cfg.tipZ,tipY:cfg.tipY,pz:ORIGIN.z-cfg.tipZ,typeKey};followPos.copy(cam.position);followLook.copy(tipOf(cur));g.rotation.y=Math.atan2(-a.v.x,-a.v.z);inner.rotation.x=.9;axesLeft--;SFX.whoosh();trPts=[];ready.visible=false;updHUD();rec.push({p:cur.p.clone(),ry:g.rotation.y,th:cur.th,tz:T.position.clone(),trz:TR.rotation.z,cp:(followCam?followPos:new THREE.Vector3(0,CAM_Y,0)).clone(),cl:(followCam?followLook:new THREE.Vector3(0,CAM_Y,-15)).clone(),t:0})}
 function tipOf(a,ty=a.tipY){const c=Math.cos(a.th),s=Math.sin(a.th),ly=ty*c+a.tipZ*s,lz=ty*s-a.tipZ*c,psi=Math.atan2(-a.v.x,-a.v.z);return new THREE.Vector3(a.p.x+lz*Math.sin(psi),a.p.y+ly,a.p.z+lz*Math.cos(psi))}
 function fail(){if(cur&&!cur.failed){cur.failed=true;streak=0;updHUD()}}
@@ -429,7 +434,7 @@ if(cur){stepAxe(sdt);if(cur){recT+=sdt;rec.push({p:cur.p.clone(),ry:cur.g.rotati
 else if(trPts.length){trPts.shift();trail.geometry.setFromPoints(trPts)}
 for(const c of chipsL){c.v.y-=12*dt;c.m.position.addScaledVector(c.v,dt);c.l-=dt;if(c.l<=0)scene.remove(c.m)}chipsL=chipsL.filter(c=>c.l>0);
 shake=Math.max(0,shake-dt*3);
-if(state==='play'&&!cur&&settle>0){settle-=dt;if(settle<=0){resolve();if(autoRep&&state==='play'&&lastRec&&!photoMode){autoRep=false;applyReplay(0);repPlay=true;$('repPlay').textContent='⏸'}}}}
+if(state==='play'&&!cur&&settle>0){settle-=dt;if(settle<=0)resolve()}}
 // ================= NHẬP LIỆU =================
 const canAim=()=>!photoMode&&state==='play'&&!cur&&!thr&&settle<=0&&axesLeft>0,cvs=R.domElement;
 cvs.addEventListener('pointerdown',e=>{if(photoMode){pmDrag={x:e.clientX,y:e.clientY};cvs.setPointerCapture(e.pointerId);return}stopReplay();initAudio();if(!canAim())return;aim={sx:e.clientX,sy:e.clientY,dx:0,dy:0,hold:0};cvs.setPointerCapture(e.pointerId);updHUD()});
