@@ -6,6 +6,7 @@ const ROOT = __dirname;
 const VIDEO_DIR = path.join(ROOT, 'video');
 const MIME = {
   '.html': 'text/html; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript',
   '.glb': 'model/gltf-binary',
   '.png': 'image/png',
