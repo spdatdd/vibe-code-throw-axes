@@ -1,0 +1,12 @@
+{
+  "appId": "com.thichcamriu.game",
+  "appName": "Thích Cầm Rìu",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

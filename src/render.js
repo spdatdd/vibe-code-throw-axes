@@ -1,5 +1,6 @@
 import { $, AXE_TYPES, CAM_Y, DRAG, GRAV, ORIGIN, TR_R } from './constants.js';
 import { state } from './state.js';
+import { tr } from './i18n.js';
 import { R, scene, cam } from './scene.js';
 import { makeAxe, T } from './assets.js';
 import { canAim } from './hud.js';
@@ -328,7 +329,7 @@ export function render() {
       const pr = predictTurns(a, cfg);
       spinInfo.style.display = 'block';
       spinInfo.style.color = pr.reached ? '#8fd14f' : '#ffb36b';
-      spinInfo.textContent = '🔄 ~' + pr.turns.toFixed(2) + ' vòng';
+      spinInfo.textContent = '🔄 ~' + pr.turns.toFixed(2) + tr('turnsUnit');
     } else {
       spinInfo.style.display = 'none';
     }
@@ -346,7 +347,7 @@ export function render() {
           const pr = predictTurns(a, cfg);
           spinInfo.style.display = 'block';
           spinInfo.style.color = pr.reached ? '#8fd14f' : '#ffb36b';
-          spinInfo.textContent = '🔄 ~' + pr.turns.toFixed(2) + ' vòng';
+          spinInfo.textContent = '🔄 ~' + pr.turns.toFixed(2) + tr('turnsUnit');
         }
       }
     }
@@ -355,17 +356,17 @@ export function render() {
     } else if (state.cur && state.cur.mode === 'fly') {
       spinInfo.style.display = 'block';
       spinInfo.style.color = '#ffffff';
-      spinInfo.textContent = '🔄 ' + (Math.abs(state.cur.th - 0.9) / (Math.PI * 2)).toFixed(2) + ' vòng';
+      spinInfo.textContent = '🔄 ' + (Math.abs(state.cur.th - 0.9) / (Math.PI * 2)).toFixed(2) + tr('turnsUnit');
     } else if ((!state.autoThrow || !state.thr) && state.lastSpin && state.phase === 'play') {
       spinInfo.style.display = 'block';
       spinInfo.style.color = '#ffd36b';
-      spinInfo.textContent = '🔄 ' + state.lastSpin + ' vòng';
+      spinInfo.textContent = '🔄 ' + state.lastSpin + tr('turnsUnit');
     } else if (!state.autoThrow || !state.thr) {
       spinInfo.style.display = 'none';
     }
   }
 
-  pow.style.display = elv.style.display = on ? 'block' : 'none';
+  pow.style.display = elv.style.display = state.phase === 'play' ? 'block' : 'none';
   const { lastRec, repIdx } = getReplayState();
 
   const clampFollowCamAgainstTarget = (pos, tip, mode = 'fly') => {

@@ -15,8 +15,10 @@ export const canAim = () =>
   state.axesLeft > 0;
 
 export function applyDevMode() {
+  document.body.classList.toggle('dev-active', state.devMode);
   $('at').style.display = $('hb').style.display = state.devMode ? 'block' : 'none';
   $('distBar').style.display = $('physBar').style.display = state.devMode ? 'flex' : 'none';
+  if (state.devMode) updAxeBtn();
   if (!state.devMode) {
     $('spinInfo').style.display = 'none';
     $('rp').style.display = 'none';
@@ -66,9 +68,10 @@ export function show(title, text, btn, fn, btn2, fn2, devToggle = false, extraBt
     ov.append(b2);
   }
   for (const eb of extraBtns) {
-    if (!eb || !eb.text) continue;
+    if (!eb || (!eb.text && !eb.html)) continue;
     const b3 = document.createElement('button');
-    b3.textContent = eb.text;
+    if (eb.html) b3.innerHTML = eb.html;
+    else b3.textContent = eb.text;
     b3.style.background = eb.bg || '#334155';
     b3.onclick = () => {
       initAudio();

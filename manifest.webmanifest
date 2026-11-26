@@ -1,0 +1,16 @@
+{
+  "name": "Thích Cầm Rìu",
+  "short_name": "Ném Rìu 3D",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#1a1e2e",
+  "theme_color": "#1a1e2e",
+  "icons": [
+    {
+      "src": "assets/icon-arcade-3d.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -2,9 +2,13 @@
 let ac, nb;
 
 export function initAudio() {
-  if (ac) return;
+  if (ac) {
+    if (ac.state === 'suspended') ac.resume().catch(() => {});
+    return;
+  }
   try {
     ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === 'suspended') ac.resume().catch(() => {});
     nb = ac.createBuffer(1, ac.sampleRate * 0.4, ac.sampleRate);
     const d = nb.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
@@ -63,6 +67,10 @@ export const SFX = {
     noise(0.05, 3000, 2000, 0.2);
   },
   thud: () => tone('sine', 90, 40, 0.15, 0.5),
+  woodHit: (vol = 0.6) => {
+    tone('triangle', 160, 55, 0.12, 0.55 * vol);
+    noise(0.08, 950, 280, 0.35 * vol);
+  },
   bull: (streak = 1) => {
     const mul = Math.pow(2, Math.min(Math.max(0, streak - 1), 5) / 12);
     [523.25, 659.25, 783.99, 1046.5].forEach((f, i) =>

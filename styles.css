@@ -7,11 +7,13 @@ html, body {
   margin: 0;
   height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
   background: #1a1e2e;
   touch-action: none;
   font-family: "Trebuchet MS", "Arial Rounded MT Bold", system-ui, sans-serif;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 canvas {
@@ -146,7 +148,7 @@ canvas {
   border-radius: 8px;
   box-shadow: 3px 3px 0 #11131c;
   overflow: hidden;
-  display: none;
+  display: block;
 }
 
 #pow { left: calc(18px + env(safe-area-inset-left, 0px)); }
@@ -242,6 +244,20 @@ canvas {
   width: min(300px, calc(100vw - 48px));
   box-sizing: border-box;
   text-align: center;
+}
+
+#ov button .menu-ico {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-right: 7px;
+  margin-top: -2px;
+}
+
+#ov button .menu-ico svg {
+  width: 22px;
+  height: 22px;
+  display: block;
 }
 
 button {
@@ -383,8 +399,9 @@ button svg {
 #tm { background: #4f46e5; }
 #fc { background: #16a34a; }
 #botBar #ab, #botBar #pm, #botBar #wt, #botBar #tm, #botBar #fc { display: none; }
+body.dev-active #botBar #ab { display: inline-flex; }
 body.pm-active #botBar #pm, body.pm-active #botBar #wt, body.pm-active #botBar #tm { display: inline-flex; }
-body:not(.pm-active) #botBar:not(:has(#rp[style*="inline-flex"])) { display: none; }
+body:not(.pm-active):not(.dev-active) #botBar:not(:has(#rp[style*="inline-flex"])) { display: none; }
 #rp { background: #ea580c; display: none; }
 
 #pmBar {

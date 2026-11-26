@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#1a1e2e">
+  <title>Thích Cầm Rìu</title>
+  <link rel="icon" type="image/png" href="assets/icon-arcade-3d.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="hud" class="t"></div>
+  <div id="distBar" title="Chỉnh khoảng cách bệ đích">
+    <button id="dDec" type="button">➖</button>
+    <input id="distRng" type="range" min="10" max="45" step="0.1" value="15">
+    <button id="dInc" type="button">➕</button>
+  </div>
+  <div id="physBar" title="Thông số vật lý (Nhà phát triển)">
+    <label>🌍 <span id="gravVal">13.5</span><input id="gravRng" type="range" min="5" max="25" step="0.5" value="13.5"></label>
+    <label>💨 <span id="dragVal">0.05</span><input id="dragRng" type="range" min="0" max="0.3" step="0.01" value="0.05"></label>
+    <label>⚖️ <span id="inerVal">1.00x</span><input id="inerRng" type="range" min="0.5" max="2" step="0.05" value="1"></label>
+  </div>
+  <div id="combo" class="t"></div>
+  <div id="hint" class="t"></div>
+  <div id="pow" title="Lực"><i></i></div>
+  <div id="elv" title="Độ cao"><i></i></div>
+  <div id="spinInfo" class="t"></div>
+  <div id="rightCol">
+    <button id="pb" title="Tạm dừng">⏸</button>
+    <button id="at" class="off" title="Tự ném (G)">🤖</button>
+    <button id="hb" class="off" title="Hitbox (H)">📦</button>
+  </div>
+  <div id="axesHud" class="t" title="Số rìu còn lại"></div>
+  <div id="botBar">
+    <button id="ab" title="Đổi rìu">⚔️</button>
+    <button id="pm" title="Chụp ảnh (C)">📷</button>
+    <button id="wt" title="Thời tiết: Tự động (V)">🌦️</button>
+    <button id="tm" title="Ngày / Đêm (T)">☀️</button>
+    <button id="fc" title="Theo rìu (F)">🎥</button>
+    <button id="rp" title="Xem lại">🔁</button>
+  </div>
+  <div id="repBar">
+    <button id="repPlay">▶</button>
+    <button id="repSpd">0.5x</button>
+    <input id="repScrub" type="range" min="0" max="0" value="0">
+    <span id="repTime">0.0s</span>
+    <button id="repClose">✖</button>
+  </div>
+  <div id="pmJoy" title="Di chuyển (Photo Mode)"><div id="pmJoyKnob"></div></div>
+  <div id="ov"></div>
+  <div id="loadScreen">
+    <div class="ld-icon">🪓</div>
+    <h1>THÍCH CẦM RÌU</h1>
+    <div id="loadBar"><i></i></div>
+    <p id="loadTxt">Đang chuẩn bị... 0%</p>
+  </div>
+
+  <script src="vendor/three.min.js"></script>
+  <script src="vendor/GLTFLoader.js"></script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

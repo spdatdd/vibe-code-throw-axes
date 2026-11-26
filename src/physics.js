@@ -2,6 +2,7 @@ import {
   $, AXE_TYPES, BULL_BONUS, BULL_R, DRAG, GRAV, MAX_PULL, ORIGIN, RINGS, TR_R
 } from './constants.js';
 import { state, addScore } from './state.js';
+import { tr } from './i18n.js';
 import { SFX } from './audio.js';
 import { scene } from './scene.js';
 import { createToonRingMaterial, makeToonMaterial } from './shaders.js';
@@ -17,6 +18,8 @@ const chipOutlineGeo = new THREE.BoxGeometry(0.082, 0.082, 0.082);
 const chipOutlineMat = new THREE.MeshBasicMaterial({ color: 0x111827, side: THREE.BackSide });
 const chipMat = makeToonMaterial(0xe2b170);
 const dirtMat = makeToonMaterial(0x6b5134);
+const stoneMat = makeToonMaterial(0x9ca3af);
+const emberMat = makeToonMaterial(0xff922b, 0xe8590c);
 const sparkMat = makeToonMaterial(0x22d3ee, 0x0891b2);
 const ringGeo = new THREE.RingGeometry(0.08, 0.15, 24);
 
@@ -209,10 +212,10 @@ function fail() {
   }
 }
 
-function chips(p, n, mat = chipMat, speed = 3) {
+function chips(p, n, mat = chipMat, speed = 3, comic = true) {
   for (let i = 0; i < n; i++) {
     const m = new THREE.Mesh(chipGeo, mat);
-    m.add(new THREE.Mesh(chipOutlineGeo, chipOutlineMat));
+    if (comic) m.add(new THREE.Mesh(chipOutlineGeo, chipOutlineMat));
     m.position.copy(p);
     scene.add(m);
     state.chipsL.push({
@@ -238,24 +241,38 @@ function impactScale(a) {
   return Math.min(1.65, Math.max(0.45, (spd * Math.sqrt(a.mass || 1)) / 17));
 }
 
-function bounce(a, tip, hitTarget = true) {
+function bounce(a, tip, hitTarget = true, kind = 'target', nx = 0, nz = 1) {
   const imp = impactScale(a);
   a.mode = 'fall';
   const m = a.mass || 1;
   const offX = tip.x - T.position.x;
-  const dirX = Math.abs(offX) > 0.05 ? Math.sign(offX) : (Math.random() < 0.5 ? -1 : 1);
-  // Lực bật nảy & mô-men xoắn phụ thuộc vị trí va chạm và quán tính (khối lượng)
+  const dirX = Math.abs(nx) > 0.1
+    ? Math.sign(nx)
+    : (Math.abs(offX) > 0.05 ? Math.sign(offX) : (Math.random() < 0.5 ? -1 : 1));
+  const dirZ = Math.abs(nz) > 0.1 ? Math.sign(nz) : 1;
+  // Lực bật nảy & mô-men xoắn phụ thuộc pháp tuyến va chạm và quán tính (khối lượng)
   a.v.set(
     (dirX * (1.2 + Math.random() * 1.4) + (Math.random() - 0.5) * 0.8) / Math.sqrt(m),
     (1.5 + Math.random() * 1.1) / Math.pow(m, 0.35),
-    (2.0 + Math.random() * 1.0) / Math.sqrt(m)
+    (dirZ * (1.8 + Math.random() * 1.0)) / Math.sqrt(m)
   );
   a.sp = -a.sp * 0.55;
   a.rollSp = (dirX * (3.2 + Math.random() * 2.2)) / m;
   a.yawSp = (dirX * (2.4 + Math.random() * 2.0)) / m;
   fail();
-  SFX.bounce();
-  chips(tip, 6, sparkMat, 4.2);
+  if (kind === 'tree' || kind === 'stand') {
+    SFX.woodHit(0.6);
+    chips(tip, 6, chipMat, 3.8, hitTarget);
+  } else if (kind === 'bonfire') {
+    SFX.bounce();
+    chips(tip, 7, emberMat, 4.4, false);
+  } else if (kind === 'rock') {
+    SFX.bounce();
+    chips(tip, 6, stoneMat, 4.0, false);
+  } else {
+    SFX.bounce();
+    chips(tip, 6, sparkMat, 4.2, hitTarget);
+  }
   if (hitTarget) {
     state.tgRecoil = Math.max(state.tgRecoil, 0.05 * imp);
     state.tgWobble.amp = Math.max(state.tgWobble.amp, 0.09 * imp);
@@ -285,7 +302,7 @@ function stick(a, tip) {
 
   const m = makeAxe(a.typeKey);
   const piv = new THREE.Group();
-  const flip = a.typeKey === 'axe_double' && Math.cos(a.th) < 0 ? -1 : 1;
+  const flip = a.typeKey === 'axe_double' && Math.sin(a.th) < 0 ? -1 : 1;
   const thN = Math.atan2(Math.sin(a.th), Math.cos(a.th));
   const imp = Math.max(-0.35, Math.min(0.25, thN * 0.4));
   const rx = (a.typeKey === 'axe_double' ? 0.85 * flip : imp) + (Math.random() - 0.5) * 0.06;
@@ -396,9 +413,15 @@ function collideEnv(a, minX, maxX, minY, maxY, minZ, maxZ) {
     const minPenZ = penF < penB ? -penF : penB;
 
     if (a.mode === 'fly') {
-      if (Math.abs(minPenX) < Math.abs(minPenZ)) a.p.x += minPenX;
-      else a.p.z += minPenZ;
-      bounce(a, a.p, kind === 'stand');
+      let nx = 0, nz = 0;
+      if (Math.abs(minPenX) < Math.abs(minPenZ)) {
+        a.p.x += minPenX;
+        nx = Math.sign(minPenX) || 1;
+      } else {
+        a.p.z += minPenZ;
+        nz = Math.sign(minPenZ) || 1;
+      }
+      bounce(a, a.p, kind === 'stand', kind, nx, nz);
       return true;
     }
 
@@ -647,7 +670,7 @@ export function stepAxe(dt) {
 
     a.pz = tip.z;
     if (a.mode !== 'dead' && a.mode !== 'ground' && minY < 0.05) {
-      if (a.mode === 'fly') pop('Trượt!', new THREE.Vector3(a.p.x, 0.4, a.p.z), '#ffb3a0', 24);
+      if (a.mode === 'fly') pop(tr('miss'), new THREE.Vector3(a.p.x, 0.4, a.p.z), '#ffb3a0', 24);
       fail();
       const bladeFirst = minBladeY < 0.06 && minBladeY <= minBodyY - 0.18 && a.v.y < -2.5;
       if (bladeFirst) {

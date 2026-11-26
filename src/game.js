@@ -61,6 +61,10 @@ export function startLevel(n) {
   tgShakeFx.visible = false;
   state.lastSpin = '';
   state.settle = 0;
+  const pi = $('pow')?.firstElementChild;
+  const ei = $('elv')?.firstElementChild;
+  if (pi) pi.style.height = '0%';
+  if (ei) ei.style.height = '0%';
   state.phase = 'play';
   ov.classList.add('hide');
   updHUD();
@@ -118,16 +122,18 @@ export function showMenu() {
   applyDevMode();
   const axeLabel = () => {
     const cfg = AXE_TYPES[state.axeIdx] || AXE_TYPES[0];
-    return tr('axeTypePrefix') + tr('axe_' + cfg.key);
+    const prefix = tr('axeTypePrefix').replace(/^[^\p{L}\p{N}]+/u, '');
+    const name = tr('axe_' + cfg.key).replace(/^[^\p{L}\p{N}]+/u, '');
+    return `<span class="menu-ico">${cfg.iconHtml}</span><span>${prefix}${name}</span>`;
   };
   const axeBtn = {
-    text: axeLabel(),
+    html: axeLabel(),
     bg: '#b45309',
     fn: btn => {
       state.axeIdx = (state.axeIdx + 1) % AXE_TYPES.length;
       updAxeBtn();
       refreshReadyAxe();
-      btn.textContent = axeLabel();
+      btn.innerHTML = axeLabel();
     }
   };
   const settingsBtn = { text: tr('settings'), bg: '#0f766e', fn: () => showSettings(showMenu) };
@@ -162,15 +168,6 @@ function showSettings(onBack = () => { state.phase = 'play'; togglePause(); }) {
     null,
     false,
     [
-      {
-        text: tr('photoMode') + (state.photoMode ? tr('on') : tr('off')),
-        bg: '#0284c7',
-        fn: () => {
-          if (state.phase === 'pause') state.phase = 'play';
-          ov.classList.add('hide');
-          togglePhoto();
-        }
-      },
       {
         text: wtText(),
         bg: '#0f766e',
@@ -220,6 +217,15 @@ export function togglePause() {
       `\n⭐ ${tr('totalScore')}: ${state.score}  ·  🏆 ${tr('bestScore')}: ${state.best}`;
 
     const extra = [
+      {
+        text: tr('photoMode') + (state.photoMode ? tr('on') : tr('off')),
+        bg: '#0284c7',
+        fn: () => {
+          state.phase = 'play';
+          ov.classList.add('hide');
+          togglePhoto();
+        }
+      },
       { text: tr('settings'), bg: '#0f766e', fn: () => showSettings(() => { state.phase = 'play'; togglePause(); }) },
       ...(state.gameMode === 'practice'
         ? [

@@ -154,12 +154,8 @@ export function stepReplay(dt) {
   while (nxt < fs.length - 1 && fs[nxt + 1].t <= repT) nxt++;
   if (nxt !== repIdx) applyReplay(nxt);
   if (repIdx >= fs.length - 1) {
-    if (state.photoMode) {
-      applyReplay(0);
-      repT = 0;
-    } else {
-      setReplayPlay(false);
-    }
+    applyReplay(0);
+    repT = 0;
   }
 }
 

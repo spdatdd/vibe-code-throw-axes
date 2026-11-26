@@ -14,11 +14,12 @@ export const ORIGIN = new THREE.Vector3(0.12, 1.86, -1.1);
 
 const VIKING_AXE_SVG =
   '<svg viewBox="0 0 24 24" aria-hidden="true">' +
-  '<path d="M5 20 L16 9" stroke="#11131c" stroke-width="4.4" stroke-linecap="round"/>' +
-  '<path d="M5 20 L16 9" stroke="#d98a3c" stroke-width="2.4" stroke-linecap="round"/>' +
-  '<path d="M6.8 18.2 L9.4 15.6" stroke="#7c3f18" stroke-width="2.8" stroke-linecap="round"/>' +
-  '<path d="M13 6 C16.5 4.5 20 6 20.5 10 C20.8 12.8 18.5 15.2 15.2 15.6 L13.8 11.2 L11.5 9 Z" fill="#e2e8f0" stroke="#11131c" stroke-width="1.8" stroke-linejoin="round"/>' +
-  '<path d="M18.4 7.2 C19.4 9.1 19.2 11.6 17.5 13.5" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" fill="none"/>' +
+  '<path d="M5 20.5 L15.5 8.5" stroke="#11131c" stroke-width="4.6" stroke-linecap="round"/>' +
+  '<path d="M5 20.5 L15.5 8.5" stroke="#c27438" stroke-width="2.5" stroke-linecap="round"/>' +
+  '<path d="M6.4 18.9 L9.2 15.7" stroke="#6b3414" stroke-width="3" stroke-linecap="round"/>' +
+  '<path d="M12.2 6.8 C16.4 3.8 20.6 5.2 21 9.8 C21.3 13.6 18.4 17.2 14.5 17.5 C14.9 14.5 14.4 12.6 12.8 11.4 L10.8 9.6 Z" fill="#dbeafe" stroke="#11131c" stroke-width="1.8" stroke-linejoin="round"/>' +
+  '<path d="M18.6 6.8 C19.8 9.2 19.3 12.6 16.8 15.4" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" fill="none"/>' +
+  '<circle cx="13.8" cy="9.6" r="1.4" fill="#94a3b8" stroke="#11131c" stroke-width="1.2"/>' +
   '</svg>';
 
 const DOUBLE_AXE_SVG =
@@ -32,11 +33,12 @@ const DOUBLE_AXE_SVG =
 
 const TOMAHAWK_SVG =
   '<svg viewBox="0 0 24 24" aria-hidden="true">' +
-  '<path d="M4 20 L15 9" stroke="#11131c" stroke-width="4.2" stroke-linecap="round"/>' +
-  '<path d="M4 20 L15 9" stroke="#d98a3c" stroke-width="2.2" stroke-linecap="round"/>' +
-  '<path d="M12.5 6.5 L18.5 4.5 C20.5 7.5 20.5 11.5 17.5 13.8 L13.5 10.5 Z" fill="#e2e8f0" stroke="#11131c" stroke-width="1.8" stroke-linejoin="round"/>' +
-  '<path d="M10.8 7.8 L13.5 10.5" stroke="#11131c" stroke-width="3.6" stroke-linecap="round"/>' +
-  '<path d="M10.8 7.8 L13.5 10.5" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round"/>' +
+  '<path d="M5.5 20.5 L15 7.5" stroke="#11131c" stroke-width="4.2" stroke-linecap="round"/>' +
+  '<path d="M5.5 20.5 L15 7.5" stroke="#eab308" stroke-width="2.2" stroke-linecap="round"/>' +
+  '<path d="M12.8 7.8 L7.5 5.6 L11.2 10.6 Z" fill="#94a3b8" stroke="#11131c" stroke-width="1.6" stroke-linejoin="round"/>' +
+  '<path d="M13.2 7.2 L19.8 5.2 L20.4 11.8 L14.2 11.2 Z" fill="#fef08a" stroke="#11131c" stroke-width="1.8" stroke-linejoin="round"/>' +
+  '<path d="M18.5 6.4 L19 10.5" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/>' +
+  '<rect x="11.5" y="7.5" width="3.2" height="3.2" rx="0.7" transform="rotate(-35 13.1 9.1)" fill="#f59e0b" stroke="#11131c" stroke-width="1.4"/>' +
   '</svg>';
 
 const svgWrap = body => `<svg viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
@@ -60,7 +62,7 @@ const WEATHER_AUTO_SVG = svgWrap(
 export const AXE_TYPES = [
   { key: 'axe', icon: '🪓', iconHtml: VIKING_AXE_SVG, label: '🪓 Rìu Viking', gripScale: 0.48, tipZ: 0.50, tipY: 0.04, colliderColor: 0x00e5ff, mass: 1.0 },
   { key: 'axe_double', icon: '⚔️', iconHtml: DOUBLE_AXE_SVG, label: '⚔️ Rìu 2 Lưỡi', gripScale: 0.46, tipZ: 0.34, tipY: -0.35, colliderColor: 0xff3d7f, mass: 1.35 },
-  { key: 'axe_tomahawk', icon: '🪓', iconHtml: TOMAHAWK_SVG, label: 'Tomahawk', gripScale: 0.50, tipZ: 0.44, tipY: -0.10, colliderColor: 0xffc400, mass: 0.75 }
+  { key: 'axe_tomahawk', icon: '🪶', iconHtml: TOMAHAWK_SVG, label: '🪶 Tomahawk', gripScale: 0.50, tipZ: 0.44, tipY: -0.10, colliderColor: 0xffc400, mass: 0.75 }
 ];
 
 export const TIME_MODES = [

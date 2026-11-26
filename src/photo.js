@@ -1,5 +1,6 @@
 import { $, ov, UI_ICONS } from './constants.js';
 import { state } from './state.js';
+import { tr } from './i18n.js';
 import { cam } from './scene.js';
 import { show } from './hud.js';
 import { getReplayState, stopReplay } from './replay.js';
@@ -40,7 +41,7 @@ export function togglePhoto() {
     $('repBar').style.bottom = 'calc(66px + env(safe-area-inset-bottom,0px))';
     if (state.phase === 'menu') showMenu();
     else if (state.phase === 'pause') {
-      show('Tạm dừng', '', 'Tiếp tục', () => {
+      show(tr('pauseTitle'), '', tr('resume'), () => {
         state.phase = 'play';
         ov.classList.add('hide');
       });

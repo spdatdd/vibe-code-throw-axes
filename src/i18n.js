@@ -6,7 +6,7 @@ const DICT = {
     docTitle: 'Thích Cầm Rìu',
     challengeBtn: '🔥 Thử thách (Màn 1–10)',
     practiceBtn: '🎯 Tập luyện (Chọn màn)',
-    axeTypePrefix: '⚔️ Loại rìu: ',
+    axeTypePrefix: '🛡️ Loại rìu: ',
     playAgain: '🔁 Chơi lại',
     devLabel: '🛠 Nhà phát triển: ',
     on: 'Bật',
@@ -45,7 +45,7 @@ const DICT = {
     tm_night: 'Ban đêm',
     axe_axe: '🪓 Rìu Viking',
     axe_axe_double: '⚔️ Rìu 2 Lưỡi',
-    axe_axe_tomahawk: 'Tomahawk',
+    axe_axe_tomahawk: '🪶 Tomahawk',
     hintThrow: 'Nhấn giữ để tích sức ném, thả tay để ném',
     challengeDone: 'Hoàn thành thử thách!',
     challengeDoneSub: 'Bạn đã vượt qua tất cả {n} màn!',
@@ -55,14 +55,20 @@ const DICT = {
     levelScore: 'Điểm màn: ',
     axeBonus: 'Thưởng rìu thừa: +',
     outOfAxes: 'Hết rìu!',
-    points: 'điểm'
+    points: 'điểm',
+    miss: 'Trượt!',
+    turnsUnit: ' vòng',
+    loadingModels: 'Đang tải mô hình 3D... {pct}% ({done}/{total})',
+    loadErrorTitle: 'Lỗi tải mô hình',
+    loadErrorMsg: 'Không tải được file .glb trong thư mục assets/model/.\nHãy mở game qua local server (vd: node server.js) thay vì mở trực tiếp file://.',
+    retry: 'Thử lại'
   },
   en: {
     gameTitle: 'AXE THROW 3D',
     docTitle: 'Axe Throw 3D',
     challengeBtn: '🔥 Challenge (Levels 1–10)',
     practiceBtn: '🎯 Practice (Select Level)',
-    axeTypePrefix: '⚔️ Axe: ',
+    axeTypePrefix: '🛡️ Axe: ',
     playAgain: '🔁 Play Again',
     devLabel: '🛠 Developer Mode: ',
     on: 'On',
@@ -101,7 +107,7 @@ const DICT = {
     tm_night: 'Night',
     axe_axe: '🪓 Viking Axe',
     axe_axe_double: '⚔️ Double Axe',
-    axe_axe_tomahawk: 'Tomahawk',
+    axe_axe_tomahawk: '🪶 Tomahawk',
     hintThrow: 'Hold to charge throw, release to throw',
     challengeDone: 'Challenge Complete!',
     challengeDoneSub: 'You cleared all {n} levels!',
@@ -111,7 +117,13 @@ const DICT = {
     levelScore: 'Level Score: ',
     axeBonus: 'Unused Axes Bonus: +',
     outOfAxes: 'Out of Axes!',
-    points: 'pts'
+    points: 'pts',
+    miss: 'Miss!',
+    turnsUnit: ' turns',
+    loadingModels: 'Loading 3D models... {pct}% ({done}/{total})',
+    loadErrorTitle: 'Model Load Error',
+    loadErrorMsg: 'Failed to load .glb files in assets/model/.\nPlease open the game via a local server (e.g. node server.js) instead of file://.',
+    retry: 'Retry'
   }
 };
 

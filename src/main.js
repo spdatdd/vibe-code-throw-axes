@@ -1,5 +1,6 @@
 import { $, ov } from './constants.js';
 import { state } from './state.js';
+import { tr } from './i18n.js';
 import { fit, updateAtmosphere } from './scene.js';
 import { buildEnvironment, loadGLBs, setTargetModel, T } from './assets.js';
 import { show, initComicIcons, updAxeBtn, updWeatherBtn } from './hud.js';
@@ -48,7 +49,10 @@ const loadTxt = $('loadTxt');
 loadGLBs((done, total) => {
   const pct = Math.round((done / total) * 100);
   loadFill.style.width = pct + '%';
-  loadTxt.textContent = `Đang tải mô hình 3D... ${pct}% (${done}/${total})`;
+  loadTxt.textContent = tr('loadingModels')
+    .replace('{pct}', pct)
+    .replace('{done}', done)
+    .replace('{total}', total);
 })
   .then(() => {
     buildEnvironment();
@@ -63,9 +67,9 @@ loadGLBs((done, total) => {
   .catch(err => {
     loadScreen.classList.add('hide');
     show(
-      'Lỗi tải mô hình',
-      'Không tải được file .glb trong thư mục assets/model/.\nHãy mở game qua local server (vd: python -m http.server hoặc npx serve) thay vì mở trực tiếp file://.',
-      'Thử lại',
+      tr('loadErrorTitle'),
+      tr('loadErrorMsg'),
+      tr('retry'),
       () => location.reload()
     );
     console.error(err);
