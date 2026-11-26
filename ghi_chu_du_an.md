@@ -25,3 +25,10 @@ Lưu ý nếu cần tinh chỉnh thêm:
   `POLE` (hiện là hướng ra bên phải/xuống dưới/ra trước).
 - Nếu thấy tay "duỗi quá đà" lúc vung mạnh (resolve IK bị kẹp ở maxR) -> tăng
   SH_L/FA_L lên một chút.
+
+## 2026-11-26 — Tối ưu & chuẩn bị build APK Android (Capacitor)
+- Nén icon `assets/icon-arcade-3d.png` (512x512, bảng màu 256 màu) từ ~648.5 KB xuống ~64.9 KB.
+- Xóa 2 file `.glb` không sử dụng (`assets/model/meshy-bird.glb`, `assets/model/hand_glove.glb`), giảm ~417 KB dung lượng đóng gói vào `www/`.
+- Khóa phiên bản `@capacitor/core`, `@capacitor/cli`, `@capacitor/android` (`^6.2.0`) và `@capacitor/app` (`^6.0.2`) trong `package.json`.
+- Thêm `scripts/generate-android-icons.py` để tự động tạo bộ Android launcher icon (`ic_launcher`, `ic_launcher_round`, `ic_launcher_foreground`, `ic_launcher_background.xml`) và tích hợp vào `Build_APK_ThichCamRiu.ipynb`.
+- Bổ sung xử lý vòng đời app trong `src/main.js` và `src/audio.js`: tự động pause game và `suspendAudio()` khi ẩn app (`visibilitychange`), hỗ trợ nút Back Android qua `@capacitor/app`.
