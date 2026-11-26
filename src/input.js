@@ -3,7 +3,7 @@ import { state } from './state.js';
 import { initAudio } from './audio.js';
 import { R } from './scene.js';
 import { ASSETS } from './assets.js';
-import { canAim, toggleAuto, toggleFollow, toggleTime, updHUD } from './hud.js';
+import { canAim, setTargetDist, syncPhysUI, toggleAuto, toggleFollow, toggleHitbox, toggleTime, toggleWeather, updAxeBtn, updHUD } from './hud.js';
 import { stopReplay } from './replay.js';
 import { togglePhoto } from './photo.js';
 import { startThrow } from './physics.js';
@@ -16,20 +16,30 @@ export function bindInputs() {
   $('ab').onclick = () => {
     if (!ASSETS.axe) return;
     state.axeIdx = (state.axeIdx + 1) % AXE_TYPES.length;
-    $('ab').textContent = AXE_TYPES[state.axeIdx].label;
+    updAxeBtn();
     refreshReadyAxe();
   };
   $('tm').onclick = toggleTime;
+  $('wt').onclick = toggleWeather;
   $('fc').onclick = toggleFollow;
   $('at').onclick = toggleAuto;
+  $('hb').onclick = toggleHitbox;
+  $('dDec').onclick = () => setTargetDist(-state.tg.z - 1);
+  $('dInc').onclick = () => setTargetDist(-state.tg.z + 1);
+  $('distRng').oninput = e => setTargetDist(+e.target.value);
+  $('gravRng').oninput = e => { state.phys.grav = +e.target.value; syncPhysUI(); };
+  $('dragRng').oninput = e => { state.phys.drag = +e.target.value; syncPhysUI(); };
+  $('inerRng').oninput = e => { state.phys.inertia = +e.target.value; syncPhysUI(); };
 
   addEventListener('keydown', e => {
     const k = e.key.toLowerCase();
     state.keys[k] = true;
     if (k === 'c') { togglePhoto(); return; }
     if (k === 't') { toggleTime(); return; }
+    if (k === 'v') { toggleWeather(); return; }
     if (k === 'f') { toggleFollow(); return; }
-    if (k === 'g') { toggleAuto(); return; }
+    if (k === 'g' && state.devMode) { toggleAuto(); return; }
+    if (k === 'h' && state.devMode) { toggleHitbox(); return; }
     if (e.key === 'Escape' && state.photoMode) { togglePhoto(); return; }
     if (!state.photoMode && (k === 'p' || e.key === 'Escape' || e.code === 'Space')) togglePause();
   });
@@ -37,6 +47,53 @@ export function bindInputs() {
   addEventListener('keyup', e => {
     state.keys[e.key.toLowerCase()] = false;
   });
+
+  const joy = $('pmJoy');
+  const knob = $('pmJoyKnob');
+  if (joy && knob) {
+    const JOY_R = 34;
+    const updJoy = e => {
+      const rect = joy.getBoundingClientRect();
+      const cx = rect.left + rect.width * 0.5;
+      const cy = rect.top + rect.height * 0.5;
+      let dx = e.clientX - cx;
+      let dy = e.clientY - cy;
+      const d = Math.hypot(dx, dy);
+      if (d > JOY_R) {
+        dx = (dx / d) * JOY_R;
+        dy = (dy / d) * JOY_R;
+      }
+      state.pmJoy.x = dx / JOY_R;
+      state.pmJoy.y = -dy / JOY_R;
+      knob.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
+    };
+    const resetJoy = () => {
+      state.pmJoy.active = false;
+      state.pmJoy.x = 0;
+      state.pmJoy.y = 0;
+      state.pmJoy.id = null;
+      knob.style.transform = 'translate(0px, 0px)';
+    };
+    joy.addEventListener('pointerdown', e => {
+      if (!state.photoMode) return;
+      e.stopPropagation();
+      state.pmJoy.active = true;
+      state.pmJoy.id = e.pointerId;
+      joy.setPointerCapture(e.pointerId);
+      updJoy(e);
+    });
+    joy.addEventListener('pointermove', e => {
+      if (!state.pmJoy.active || e.pointerId !== state.pmJoy.id) return;
+      e.stopPropagation();
+      updJoy(e);
+    });
+    joy.addEventListener('pointerup', e => {
+      if (e.pointerId !== state.pmJoy.id) return;
+      e.stopPropagation();
+      resetJoy();
+    });
+    joy.addEventListener('pointercancel', resetJoy);
+  }
 
   const cvs = R.domElement;
 
