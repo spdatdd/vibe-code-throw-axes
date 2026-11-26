@@ -81,5 +81,11 @@ export const WEATHER_MODES = [
 
 export const REP_SPDS = [0.25, 0.5, 1];
 
+export const GRAPHICS_MODES = [
+  { k: 'low', pixelRatioCap: 1, shadowSize: 0, softShadow: false, weatherScale: 0.45, bonfireLight: false },
+  { k: 'med', pixelRatioCap: 1.5, shadowSize: 1024, softShadow: false, weatherScale: 0.75, bonfireLight: true },
+  { k: 'high', pixelRatioCap: 2, shadowSize: 2048, softShadow: true, weatherScale: 1, bonfireLight: true }
+];
+
 export const $ = id => document.getElementById(id);
 export const ov = $('ov');

@@ -2,10 +2,13 @@ import { CAM_Y, DRAG, GRAV } from './constants.js';
 
 let initialBest = 0;
 let initialLang = 'vi';
+let initialGfx = 1;
 try {
   initialBest = +localStorage.getItem('axeBest3d') || 0;
   const savedLang = localStorage.getItem('axeLang3d');
   if (savedLang === 'en' || savedLang === 'vi') initialLang = savedLang;
+  const savedGfx = localStorage.getItem('axeGfx3d');
+  if (savedGfx === '0' || savedGfx === '1' || savedGfx === '2') initialGfx = +savedGfx;
 } catch (e) {}
 
 /** Trạng thái dùng chung giữa các module. */
@@ -40,6 +43,7 @@ export const state = {
   axeIdx: 0,
   tmIdx: 1,
   wtIdx: 1,
+  gfxIdx: initialGfx,
   followCam: true,
   autoThrow: false,
   showHitbox: false,
@@ -68,6 +72,14 @@ export function toggleLang() {
   try {
     localStorage.setItem('axeLang3d', state.lang);
   } catch (e) {}
+}
+
+export function cycleGfx() {
+  state.gfxIdx = (state.gfxIdx + 1) % 3;
+  try {
+    localStorage.setItem('axeGfx3d', String(state.gfxIdx));
+  } catch (e) {}
+  return state.gfxIdx;
 }
 
 export function addScore(n) {

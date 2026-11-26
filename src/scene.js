@@ -1,8 +1,8 @@
-import { CAM_Y, TIME_MODES } from './constants.js';
+import { CAM_Y, GRAPHICS_MODES, TIME_MODES } from './constants.js';
 import { state } from './state.js';
 import { createGrassTexture, createLaneTexture, createStoneTexture, createWoodTexture } from './textures.js';
 import { createFlameMaterial, createSkyDome, makeToonMaterial, botwShaderUniforms } from './shaders.js';
-import { updateWeather, weatherGroup } from './weather.js';
+import { setWeatherQuality, updateWeather, weatherGroup } from './weather.js';
 
 // ================= CẢNH 3D =================
 export const R = new THREE.WebGLRenderer({ antialias: true });
@@ -316,6 +316,30 @@ export function updateAtmosphere(dt) {
       bf.f2.material.uniforms.uTime.value = skyT + bf.ph;
       bf.f2.material.uniforms.uIntensity.value = nightF;
     }
-    bf.lt.intensity = lit ? 1.4 * nightF * fl : 0;
+    bf.lt.intensity = lit && bonfireLightsEnabled ? 1.4 * nightF * fl : 0;
   }
 }
+
+let bonfireLightsEnabled = true;
+
+export function applyGraphics(idx = state.gfxIdx) {
+  const cfg = GRAPHICS_MODES[idx] || GRAPHICS_MODES[1];
+  R.setPixelRatio(Math.min(window.devicePixelRatio || 1, cfg.pixelRatioCap));
+  const useShadow = cfg.shadowSize > 0;
+  R.shadowMap.enabled = useShadow;
+  R.shadowMap.type = cfg.softShadow ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
+  sun.castShadow = useShadow;
+  if (useShadow && sun.shadow.mapSize.x !== cfg.shadowSize) {
+    sun.shadow.mapSize.set(cfg.shadowSize, cfg.shadowSize);
+    if (sun.shadow.map) {
+      sun.shadow.map.dispose();
+      sun.shadow.map = null;
+    }
+  }
+  R.shadowMap.needsUpdate = true;
+  bonfireLightsEnabled = cfg.bonfireLight;
+  setWeatherQuality(cfg.weatherScale);
+  fit();
+}
+
+applyGraphics(state.gfxIdx);

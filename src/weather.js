@@ -322,3 +322,9 @@ export function updateWeather(dt, camPos) {
     SKY_BOLT
   };
 }
+
+export function setWeatherQuality(scale = 1) {
+  const s = Math.max(0.2, Math.min(1, scale));
+  rainGeo.setDrawRange(0, Math.floor(RAIN_COUNT * s) * 2);
+  snowGeo.setDrawRange(0, Math.floor(SNOW_COUNT * s));
+}

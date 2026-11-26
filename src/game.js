@@ -1,7 +1,7 @@
-import { $, ov, AXES, AXE_TYPES, TR_R, TIME_MODES, WEATHER_MODES } from './constants.js';
-import { state, addScore, toggleLang } from './state.js';
+import { $, ov, AXES, AXE_TYPES, GRAPHICS_MODES, TR_R, TIME_MODES, WEATHER_MODES } from './constants.js';
+import { state, addScore, cycleGfx, toggleLang } from './state.js';
 import { tr } from './i18n.js';
-import { scene, cam } from './scene.js';
+import { applyGraphics, scene, cam } from './scene.js';
 import { setTargetModel, setTargetRail, T, TR, tgShakeFx, standGrp, standPost, cartWheels } from './assets.js';
 import { applyDevMode, canAim, show, toggleFollow, toggleTime, toggleWeather, updAxeBtn, updHUD } from './hud.js';
 import { togglePhoto } from './photo.js';
@@ -155,8 +155,10 @@ export function showMenu() {
 function showSettings(onBack = () => { state.phase = 'play'; togglePause(); }) {
   const wtObj = () => WEATHER_MODES[state.wtIdx] || WEATHER_MODES[0];
   const tmObj = () => TIME_MODES[state.tmIdx] || TIME_MODES[0];
+  const gfxObj = () => GRAPHICS_MODES[state.gfxIdx] || GRAPHICS_MODES[1];
   const wtText = () => `${wtObj().icon} ${tr('weatherLabel')}${tr('wt_' + wtObj().k)}`;
   const tmText = () => `${tmObj().icon} ${tr('timeLabel')}${tr('tm_' + tmObj().k)}`;
+  const gfxText = () => `${tr('gfxLabel')}${tr('gfx_' + gfxObj().k)}`;
   const followText = () => tr('followAxe') + (state.followCam ? tr('on') : tr('off'));
 
   show(
@@ -191,6 +193,14 @@ function showSettings(onBack = () => { state.phase = 'play'; togglePause(); }) {
           toggleFollow();
           btn.textContent = followText();
           btn.style.background = state.followCam ? '#15803d' : '#475569';
+        }
+      },
+      {
+        text: gfxText(),
+        bg: '#b45309',
+        fn: btn => {
+          applyGraphics(cycleGfx());
+          btn.textContent = gfxText();
         }
       },
       {
