@@ -5,10 +5,11 @@ import { fit, updateAtmosphere } from './scene.js';
 import { buildEnvironment, loadGLBs, setTargetModel, T } from './assets.js';
 import { show, initComicIcons, updAxeBtn, updWeatherBtn } from './hud.js';
 import { bindReplayUI, getReplayState, stepReplay } from './replay.js';
-import { bindPhotoUI } from './photo.js';
+import { bindPhotoUI, togglePhoto } from './photo.js';
 import { bindInputs } from './input.js';
-import { showMenu, update } from './game.js';
+import { showMenu, togglePause, update } from './game.js';
 import { buildHandModels, render } from './render.js';
+import { resumeAudio, suspendAudio } from './audio.js';
 
 // ================= KHỞI ĐỘNG & VÒNG LẶP CHÍNH =================
 addEventListener('resize', fit);
@@ -17,6 +18,31 @@ fit();
 bindInputs();
 bindPhotoUI();
 bindReplayUI();
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    suspendAudio();
+    if (state.phase === 'play' && !state.photoMode) {
+      togglePause();
+    }
+  } else {
+    last = performance.now();
+    resumeAudio();
+  }
+});
+
+const capApp = window.Capacitor?.Plugins?.App;
+if (capApp?.addListener) {
+  capApp.addListener('backButton', () => {
+    if (state.photoMode) {
+      togglePhoto();
+    } else if (state.phase === 'play' || state.phase === 'pause') {
+      togglePause();
+    } else {
+      capApp.exitApp();
+    }
+  });
+}
 
 let last = performance.now();
 function loop() {

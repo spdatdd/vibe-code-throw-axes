@@ -17,6 +17,18 @@ export function initAudio() {
   }
 }
 
+export function suspendAudio() {
+  if (ac && ac.state === 'running') {
+    ac.suspend().catch(() => {});
+  }
+}
+
+export function resumeAudio() {
+  if (ac && ac.state === 'suspended') {
+    ac.resume().catch(() => {});
+  }
+}
+
 function tone(ty, f1, f2, dur, v) {
   if (!ac) return;
   const t = ac.currentTime;
